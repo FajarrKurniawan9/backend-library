@@ -8,4 +8,10 @@ export class BooksService {
       feature: `books`,
     };
   }
+  getHealth(): object {
+    return {
+      status: 'ok',
+      service: 'books',
+    };
+  }
 }
