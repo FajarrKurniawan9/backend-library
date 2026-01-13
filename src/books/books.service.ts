@@ -14,4 +14,7 @@ export class BooksService {
       service: 'books',
     };
   }
+  getNumberOfBooks(): number {
+    return 12 + 12;
+  }
 }
