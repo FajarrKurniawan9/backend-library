@@ -1,43 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { member } from './member.type';
 import { CreateMembersDto } from './dto/create-members.dto';
+import { UpdateMembersDto } from './dto/update-members.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class MembersService {
-  private members: member[] = [];
-  private nextId = 1;
-
-  create(dto: CreateMembersDto): member {
-    const newMember: member = {
-      id: this.nextId++,
-      ...dto,
-    };
-    this.members.push(newMember);
-    return newMember;
+  constructor(private prisma: PrismaService) {}
+  async create(dto: CreateMembersDto) {
+    return this.prisma.member.create({ data: dto });
   }
-
-  findAll(): member[] {
-    return this.members;
+  async findAll() {
+    return this.prisma.member.findMany({ orderBy: { id: 'asc' } });
   }
-
-  findOne(id: number): member {
-    const member = this.members.find((m) => m.id === id);
-    if (!member) {
-      throw new NotFoundException(`Member with ID ${id} not found`);
-    }
+  async findOne(id: number) {
+    const member = await this.prisma.member.findUnique({
+      where: { id },
+    });
+    if (!member) throw new NotFoundException('Member not found');
     return member;
   }
-
-  update(id: number, dto: Partial<CreateMembersDto>): member {
-    const member = this.findOne(id);
-    const updated: member = { ...member, ...(dto as Partial<member>) };
-    this.members = this.members.map((m) => (m.id === id ? updated : m));
-    return updated;
+  async update(id: number, dto: UpdateMembersDto) {
+    await this.findOne(id);
+    return this.prisma.member.update({
+      where: { id },
+      data: dto,
+    });
   }
-
-  remove(id: number) {
-    this.findOne(id);
-    this.members = this.members.filter((m) => m.id !== id);
+  async remove(id: number) {
+    await this.findOne(id);
+    await this.prisma.member.delete({ where: { id } });
     return { message: `Member with id ${id} deleted` };
   }
 }
