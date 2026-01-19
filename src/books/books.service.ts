@@ -2,19 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Book } from './book.type';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class BooksService {
-  private books: Book[] = [];
-  private nextId = 1;
+  constructor(private prisma: PrismaService) {}
 
   create(dto: CreateBookDto): Book {
-    const newBook: Book = {
-      id: this.nextId++,
-      ...dto,
-    };
-    this.books.push(newBook);
-    return newBook;
+    return this.prisma.Book.create({ data: dto });
   }
 
   findAll(): Book[] {
