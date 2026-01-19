@@ -8,32 +8,30 @@ import { PrismaService } from '../prisma/prisma.service';
 export class BooksService {
   constructor(private prisma: PrismaService) {}
 
-  create(dto: CreateBookDto): Book {
-    return this.prisma.Book.create({ data: dto });
+  async create(dto: CreateBookDto) {
+    return this.prisma.book.create({ data: dto });
   }
 
-  findAll(): Book[] {
-    return this.books;
+  async findAll(): Promise<Book[]> {
+    return this.prisma.book.findMany({ orderBy: { id: 'asc' } });
   }
 
-  findOne(id: number): Book {
-    const book = this.books.find((b) => b.id === id);
+  async findOne(id: number): Promise<Book> {
+    const book = await this.prisma.book.findUnique({ where: { id } });
     if (!book) {
       throw new NotFoundException(`Book with ID ${id} not found`);
     }
     return book;
   }
 
-  update(id: number, dto: UpdateBookDto): Book {
-    const book = this.findOne(id);
-    const updated: Book = { ...book, ...(dto as Partial<Book>) };
-    this.books = this.books.map((b) => (b.id === id ? updated : b));
-    return updated;
+  async update(id: number, dto: UpdateBookDto) {
+    await this.findOne(id);
+    return this.prisma.book.update({ where: { id }, data: dto });
   }
 
-  remove(id: number) {
-    this.findOne(id);
-    this.books = this.books.filter((b) => b.id !== id);
+  async remove(id: number) {
+    await this.findOne(id);
+    await this.prisma.book.delete({ where: { id } });
     return { message: `Book with id ${id} deleted` };
   }
 }
