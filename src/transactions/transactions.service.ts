@@ -60,7 +60,7 @@ export class TransactionsService {
 
     await this.prisma.book.update({
       where: { id: dto.bookId },
-      data: { stock: book.stock + 1 },
+      data: { stock: book!.stock + 1 },
     });
     return { message: 'Book returned successfully' };
   }
