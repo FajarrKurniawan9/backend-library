@@ -1,10 +1,10 @@
-export type TransactionType = 'borrow' | 'return';
+export type TransactionStatus = 'borrow' | 'return';
 
-export interface Transaction {
+export type Transaction = {
   id: number;
   bookId: number;
   membersId: number;
-  type: TransactionType;
+  status: TransactionStatus;
   borrowDate: Date;
   returnDate?: Date;
-}
+};

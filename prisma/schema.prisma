@@ -37,6 +37,7 @@ model Transaction {
   id         Int       @id @default(autoincrement())
   bookId     Int
   memberId   Int
+  status     String
   borrowDate DateTime  @default(now())
   returnDate DateTime?
   createdAt  DateTime  @default(now())
