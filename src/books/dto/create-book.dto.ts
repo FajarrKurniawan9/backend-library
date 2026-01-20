@@ -12,4 +12,9 @@ export class CreateBookDto {
   @IsInt()
   @Min(1)
   year: number;
+
+  @IsInt()
+  @Min(0)
+  @IsNotEmpty()
+  stock: number;
 }

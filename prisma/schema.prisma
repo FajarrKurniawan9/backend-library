@@ -14,18 +14,34 @@ datasource db {
 }
 
 model Book {
-  id        Int      @id @default(autoincrement())
-  title     String
-  author    String
-  year      Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int           @id @default(autoincrement())
+  title       String
+  author      String
+  year        Int
+  stock       Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Transaction Transaction[]
 }
 
 model Member {
-  id        Int      @id @default(autoincrement())
-  name      String
-  className String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int           @id @default(autoincrement())
+  name        String
+  className   String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Transaction Transaction[]
+}
+
+model Transaction {
+  id         Int       @id @default(autoincrement())
+  bookId     Int
+  memberId   Int
+  borrowDate DateTime  @default(now())
+  returnDate DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  book   Book   @relation(fields: [bookId], references: [id])
+  member Member @relation(fields: [memberId], references: [id])
 }
