@@ -13,4 +13,9 @@ export class UpdateBookDto {
   @Min(1)
   @IsOptional()
   year?: number;
+
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  stock?: number;
 }

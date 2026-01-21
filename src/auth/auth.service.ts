@@ -10,6 +10,25 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async register(username: string, password: string, memberId: number) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { username },
+    });
+    if (existingUser) {
+      throw new UnauthorizedException('Username sudah digunakan');
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await this.prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+        role: 'MEMBER',
+        memberId,
+      },
+    });
+    return { message: 'Registrasi berhasil', userId: user.id };
+  }
+
   async login(username: string, password: string) {
     const user = await this.prisma.user.findUnique({
       where: { username },
