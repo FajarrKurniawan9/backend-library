@@ -31,6 +31,7 @@ model Member {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   Transaction Transaction[]
+  User User[]
 }
 
 model Transaction {
@@ -45,4 +46,21 @@ model Transaction {
 
   book   Book   @relation(fields: [bookId], references: [id])
   member Member @relation(fields: [memberId], references: [id])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  role      userRole
+  memberId  Int?
+  member    Member?  @relation(fields: [memberId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum userRole {
+  ADMIN
+  MEMBER
+  OFFICER
 }
