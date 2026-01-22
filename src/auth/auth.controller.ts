@@ -15,6 +15,6 @@ export class AuthController {
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto.username, dto.password, dto.role);
+    return this.authService.register(dto.username, dto.password, dto.memberId);
   }
 }

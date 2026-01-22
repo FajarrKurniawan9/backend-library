@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateMemberDto } from './dto/create-members.dto';
-import { UpdateMemberDto } from './dto/update-members.dto';
+import { CreateMembersDto } from './dto/create-members.dto';
+import { UpdateMembersDto } from './dto/update-members.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class MemberService {
+export class MembersService {
   constructor(private prisma: PrismaService) {}
-  async create(dto: CreateMemberDto) {
+  async create(dto: CreateMembersDto) {
     return this.prisma.member.create({ data: dto });
   }
   async findAll() {
@@ -19,7 +19,7 @@ export class MemberService {
     if (!member) throw new NotFoundException('Member not found');
     return member;
   }
-  async update(id: number, dto: UpdateMemberDto) {
+  async update(id: number, dto: UpdateMembersDto) {
     await this.findOne(id);
     return this.prisma.member.update({
       where: { id },
