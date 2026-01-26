@@ -32,7 +32,7 @@ export class AuthService {
       data: {
         username,
         password: hashedPassword,
-        role: userRole.MEMBER,
+        role: userRole.ADMIN,
         memberId: member.id,
       },
     });

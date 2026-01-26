@@ -15,6 +15,11 @@ export class AuthController {
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto.username, dto.password, dto.memberId);
+    return this.authService.register(
+      dto.username,
+      dto.password,
+      dto.name,
+      dto.className,
+    );
   }
 }
