@@ -1,6 +1,13 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
+
+interface JwtPayload {
+  sub: number;
+  username: string;
+  role: string;
+  memberId: number | null;
+}
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
@@ -9,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: process.env.JWT_SECRET || 'fallback-secret-key',
     });
   }
-  validate(payload: any) {
+  validate(payload: JwtPayload): JwtPayload {
     return payload;
   }
 }
