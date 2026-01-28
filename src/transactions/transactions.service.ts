@@ -21,7 +21,8 @@ export class TransactionsService {
         bookId: dto.bookId,
         memberId: dto.membersId,
         returnDate: dto.returnDate,
-        status: 'borrow',
+        status: 'BORROWED',
+        dueDate: dto.returnDate,
       },
       include: { book: true },
     });
@@ -39,7 +40,7 @@ export class TransactionsService {
       where: {
         bookId: dto.bookId,
         memberId: dto.membersId,
-        status: 'borrow',
+        status: 'BORROWED',
       },
     });
 
@@ -51,7 +52,7 @@ export class TransactionsService {
 
     await this.prisma.transaction.update({
       where: { id: transaction.id },
-      data: { status: 'returned', returnDate: new Date() },
+      data: { status: 'RETURNED', returnDate: new Date() },
     });
 
     const book = await this.prisma.book.findUnique({
