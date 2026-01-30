@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -59,17 +56,17 @@ model User {
   id        Int      @id @default(autoincrement())
   username  String   @unique
   password  String
-  role      userRole @default(MEMBER)
+  role      UserRole @default(MEMBER)
   memberId  Int?     @unique
   member    Member?  @relation(fields: [memberId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-enum userRole {
+enum UserRole {
   ADMIN
-  MEMBER
   OFFICER
+  MEMBER
 }
 
 enum TransactionStatus {
@@ -81,8 +78,8 @@ enum TransactionStatus {
 }
 
 enum MemberType {
-  MEMBER // Benefit: 3 buku, 14 hari, bisa reservasi
-  GUEST // Non-member: 2 buku, 7 hari, ga bisa reservasi
+  MEMBER // Benefits: 3 books, 14 days, can reserve through app
+  GUEST  // Non-member: 2 books, 7 days, can't reserve through app
 }
 
 // Note: Remember to run 'prisma migrate dev' after making changes to this file.
