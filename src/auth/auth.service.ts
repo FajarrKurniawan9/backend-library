@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserRole, userRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +19,7 @@ export class AuthService {
     className: string,
     email?: string,
     phone?: string,
-    role: UserRole = userRole.MEMBER,
+    role: UserRole = UserRole.MEMBER,
   ) {
     const existingUser = await this.prisma.user.findUnique({
       where: { username },
@@ -27,15 +27,21 @@ export class AuthService {
     if (existingUser) {
       throw new UnauthorizedException('Username sudah digunakan');
     }
+    const existingMember = await this.prisma.member.findUnique({
+      where: { studentId },
+    });
+    if (existingMember) {
+      throw new UnauthorizedException('Student ID sudah digunakan');
+    }
     const member = await this.prisma.member.create({
-      data: { name, className },
+      data: { name, studentId, class: className, email, phone },
     });
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await this.prisma.user.create({
       data: {
         username,
         password: hashedPassword,
-        role: userRole.ADMIN,
+        role,
         memberId: member.id,
       },
     });
@@ -43,6 +49,7 @@ export class AuthService {
       message: 'Registrasi berhasil',
       userId: user.id,
       memberId: member.id,
+      role: user.role,
     };
   }
 
@@ -68,6 +75,19 @@ export class AuthService {
     return {
       message: 'Login berhasil',
       access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        member: user.member
+          ? {
+              id: user.member.id,
+              name: user.member.name,
+              studentId: user.member.studentId,
+              class: user.member.class,
+            }
+          : null,
+      },
     };
   }
 }

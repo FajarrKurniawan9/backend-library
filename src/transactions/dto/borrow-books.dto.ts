@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsDate, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsDateString, IsNumber } from 'class-validator';
 
 export class BorrowBooksDto {
   @IsNotEmpty()
@@ -7,9 +7,9 @@ export class BorrowBooksDto {
 
   @IsNumber()
   @IsNotEmpty()
-  membersId: number;
+  memberId: number;
 
   @IsNotEmpty()
-  @IsDate()
-  returnDate: Date;
+  @IsDateString()
+  dueDate: string;
 }

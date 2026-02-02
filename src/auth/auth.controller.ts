@@ -8,18 +8,30 @@ import { Post, Body } from '@nestjs/common';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * POST /auth/login
+   * Login user and get JWT token
+   */
   @Post('login')
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto.username, dto.password);
   }
 
+  /**
+   * POST /auth/register
+   * Register new user with associated Member
+   */
   @Post('register')
   register(@Body() dto: RegisterDto) {
     return this.authService.register(
       dto.username,
       dto.password,
       dto.name,
-      dto.className,
+      dto.studentId,
+      dto.class,
+      dto.email,
+      dto.phone,
+      dto.role,
     );
   }
 }

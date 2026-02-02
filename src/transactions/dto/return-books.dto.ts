@@ -1,15 +1,11 @@
-import { IsNotEmpty, IsUUID, IsDate } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class ReturnBooksDto {
-  @IsUUID()
   @IsNotEmpty()
+  @IsNumber()
   bookId: number;
 
-  @IsUUID()
   @IsNotEmpty()
-  membersId: number;
-
-  @IsNotEmpty()
-  @IsDate()
-  borrowDate: Date;
+  @IsNumber()
+  memberId: number;
 }

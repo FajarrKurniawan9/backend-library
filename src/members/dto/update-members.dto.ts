@@ -1,5 +1,5 @@
-import { IsOptional, IsString } from 'class-validator';
-
+import { IsOptional, IsString, IsEmail, IsEnum } from 'class-validator';
+import { MemberType } from '@prisma/client';
 export class UpdateMembersDto {
   @IsString()
   @IsOptional()
@@ -7,5 +7,21 @@ export class UpdateMembersDto {
 
   @IsString()
   @IsOptional()
-  className?: string;
+  studentId?: string;
+
+  @IsString()
+  @IsOptional()
+  class?: string;
+
+  @IsEmail()
+  @IsOptional()
+  email?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsEnum(MemberType)
+  @IsOptional()
+  memberType?: MemberType;
 }

@@ -1,12 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { userRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 interface RequestWithUser extends Request {
   user: {
     sub: number;
     username: string;
-    role: userRole;
+    role: UserRole;
     memberId: number | null;
   };
 }
@@ -14,7 +14,7 @@ interface RequestWithUser extends Request {
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<userRole[]>(
+    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
       'roles',
       [context.getHandler()],
     );
