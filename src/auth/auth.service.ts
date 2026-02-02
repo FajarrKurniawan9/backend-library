@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { userRole } from '@prisma/client';
+import { UserRole, userRole } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +15,11 @@ export class AuthService {
     username: string,
     password: string,
     name: string,
+    studentId: string,
     className: string,
+    email?: string,
+    phone?: string,
+    role: UserRole = userRole.MEMBER,
   ) {
     const existingUser = await this.prisma.user.findUnique({
       where: { username },
@@ -23,7 +27,6 @@ export class AuthService {
     if (existingUser) {
       throw new UnauthorizedException('Username sudah digunakan');
     }
-
     const member = await this.prisma.member.create({
       data: { name, className },
     });
