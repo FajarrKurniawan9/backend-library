@@ -202,4 +202,3 @@ UNLICENSED - Project ini dibuat untuk keperluan portfolio pribadi.
 ---
 
 **Author**: Majarkan_ (Muhammad Fajar Kurniawan)  
-**Repository**: [Repository URL]
