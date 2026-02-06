@@ -1,98 +1,205 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Library Management System API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend API untuk sistem manajemen perpustakaan yang dibangun dengan NestJS, Prisma ORM, dan MySQL. Sistem ini menyediakan fitur autentikasi, otorisasi berbasis role, dan manajemen peminjaman buku.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tech Stack
 
-## Description
+- **Framework**: NestJS
+- **Database**: MySQL
+- **ORM**: Prisma
+- **Authentication**: JWT (JSON Web Token)
+- **Validation**: class-validator & class-transformer
+- **Documentation**: Swagger/OpenAPI
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Fitur Utama
 
-## Project setup
+- ✅ Autentikasi & Otorisasi berbasis JWT
+- ✅ Role-based Access Control (RBAC)
+- ✅ Manajemen Buku (CRUD)
+- ✅ Manajemen Anggota (CRUD)
+- ✅ Sistem Peminjaman & Pengembalian Buku
+- ✅ Tracking Stok Buku
+- ✅ API Documentation dengan Swagger
 
-```bash
-$ npm install
-```
+## Role & Permission
 
-## Compile and run the project
+Sistem memiliki 3 role dengan permission yang berbeda:
 
-```bash
-# development
-$ npm run start
+| Role        | Permission                                                        |
+| ----------- | ----------------------------------------------------------------- |
+| **ADMIN**   | Full access - Dapat melakukan semua operasi termasuk CRUD Books   |
+| **OFFICER** | Dapat melayani peminjaman/pengembalian buku dan mengelola Members |
+| **MEMBER**  | Dapat melihat data Books, Members, dan Transactions (read-only)   |
 
-# watch mode
-$ npm run start:dev
+## Prerequisites
 
-# production mode
-$ npm run start:prod
-```
+- Node.js (v18 atau lebih tinggi)
+- MySQL (v8 atau lebih tinggi)
+- npm atau pnpm
 
-## Run tests
+## Installation
 
 ```bash
-# unit tests
-$ npm run test
+# Clone repository
+git clone <repository-url>
+cd backend-library
 
-# e2e tests
-$ npm run test:e2e
+# Install dependencies
+npm install
 
-# test coverage
-$ npm run test:cov
+# Setup environment variables
+cp .env.example .env
+
+# Generate Prisma Client
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate deploy
 ```
+
+## Environment Variables
+
+Buat file `.env` di root project dengan konfigurasi berikut:
+
+```env
+DATABASE_URL="mysql://user:password@localhost:3306/library_db"
+JWT_SECRET="your-secret-key"
+PORT=3000
+```
+
+## Running the Application
+
+```bash
+# Development mode
+npm run start:dev
+
+# Production mode
+npm run build
+npm run start:prod
+```
+
+Aplikasi akan berjalan di `http://localhost:3000`
+
+API Documentation (Swagger) tersedia di `http://localhost:3000/api`
+
+## Database Schema
+
+### Models
+
+- **Book**: Menyimpan data buku (title, author, year, stock)
+- **Member**: Menyimpan data anggota perpustakaan (name, studentId, class, email, phone, memberType)
+- **Transaction**: Menyimpan data transaksi peminjaman (bookId, memberId, borrowDate, dueDate, returnDate, status, fine)
+- **User**: Menyimpan data user untuk autentikasi (username, password, role, memberId)
+
+### Enums
+
+- **UserRole**: `ADMIN`, `OFFICER`, `MEMBER`
+- **TransactionStatus**: `RESERVED`, `BORROWED`, `RETURNED`, `OVERDUE`, `LOST`
+- **MemberType**: `MEMBER` (3 buku, 14 hari), `GUEST` (2 buku, 7 hari)
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint         | Description                              | Auth Required | Role |
+| ------ | ---------------- | ---------------------------------------- | ------------- | ---- |
+| POST   | `/auth/register` | Register user baru dengan Member terkait | ❌            | -    |
+| POST   | `/auth/login`    | Login dan dapatkan JWT token             | ❌            | -    |
+
+### Books
+
+| Method | Endpoint     | Description             | Auth Required | Role   |
+| ------ | ------------ | ----------------------- | ------------- | ------ |
+| GET    | `/books`     | Mendapatkan semua buku  | ❌            | Public |
+| GET    | `/books/:id` | Mendapatkan detail buku | ❌            | Public |
+| POST   | `/books`     | Membuat buku baru       | ✅            | ADMIN  |
+| PUT    | `/books/:id` | Update data buku        | ✅            | ADMIN  |
+| DELETE | `/books/:id` | Menghapus buku          | ✅            | ADMIN  |
+
+### Members
+
+| Method | Endpoint       | Description                | Auth Required | Role              |
+| ------ | -------------- | -------------------------- | ------------- | ----------------- |
+| GET    | `/members`     | Mendapatkan semua anggota  | ✅            | All authenticated |
+| GET    | `/members/:id` | Mendapatkan detail anggota | ✅            | All authenticated |
+| POST   | `/members`     | Membuat anggota baru       | ✅            | ADMIN, OFFICER    |
+| PUT    | `/members/:id` | Update data anggota        | ✅            | ADMIN, OFFICER    |
+| DELETE | `/members/:id` | Menghapus anggota          | ✅            | ADMIN, OFFICER    |
+
+### Transactions
+
+| Method | Endpoint               | Description                  | Auth Required | Role              |
+| ------ | ---------------------- | ---------------------------- | ------------- | ----------------- |
+| GET    | `/transactions`        | Mendapatkan semua transaksi  | ✅            | All authenticated |
+| GET    | `/transactions/:id`    | Mendapatkan detail transaksi | ✅            | All authenticated |
+| POST   | `/transactions/borrow` | Meminjam buku (offline)      | ✅            | ADMIN, OFFICER    |
+| POST   | `/transactions/return` | Mengembalikan buku (offline) | ✅            | ADMIN, OFFICER    |
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Build untuk Production
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Build aplikasi
+npm run build
+
+# Jalankan migration di production
+npm run prisma:deploy
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Environment Production
 
-## Resources
+Pastikan file `.env.production` sudah dikonfigurasi dengan benar:
 
-Check out a few resources that may come in handy when working with NestJS:
+```env
+DATABASE_URL="mysql://user:password@production-host:3306/library_db"
+JWT_SECRET="production-secret-key"
+PORT=3000
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Menjalankan di Production
 
-## Support
+```bash
+NODE_ENV=production npm run start:prod
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Testing
 
-## Stay in touch
+```bash
+# Unit tests
+npm run test
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
+```
+
+## Project Structure
+
+```
+src/
+├── auth/              # Autentikasi & Otorisasi
+│   ├── guards/        # JWT & Role guards
+│   ├── strategies/    # JWT strategy
+│   └── decorators/    # Custom decorators
+├── books/             # Module Books
+├── members/           # Module Members
+├── transactions/      # Module Transactions
+├── prisma/            # Prisma service & module
+└── main.ts            # Entry point
+
+prisma/
+├── schema.prisma      # Database schema
+└── migrations/        # Migration files
+```
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+UNLICENSED - Project ini dibuat untuk keperluan portfolio pribadi.
+
+---
+
+**Author**: [Your Name]  
+**Repository**: [Repository URL]
