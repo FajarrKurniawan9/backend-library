@@ -79,7 +79,7 @@ enum TransactionStatus {
 
 enum MemberType {
   MEMBER // Benefits: 3 books, 14 days, can reserve through app
-  GUEST  // Non-member: 2 books, 7 days, can't reserve through app
+  GUEST // Non-member: 2 books, 7 days, can't reserve through app
 }
 
 // Note: Remember to run 'prisma migrate dev' after making changes to this file.
